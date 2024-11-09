@@ -1,0 +1,29 @@
+name: log_pro
+description: "Log Pro is a custom logging package for Flutter that simplifies tracking and debugging app behavior."
+version: 0.0.1
+
+homepage: https://github.com/EslamFares/Log_Pro
+repository: https://github.com/EslamFares/Log_Pro
+issue_tracker: https://github.com/EslamFares/Log_Pro/issues
+
+environment:
+  sdk: ^3.5.3
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+screenshots:
+  - description: "Log Pro default styles"
+    path: assets/img/1.png
+  - description: "Log Pro simple styles"
+    path: assets/img/simple_shape.png
+  - description: "Use Print instead of log"
+    path: assets/img/prt1.png
+
