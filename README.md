@@ -1,4 +1,4 @@
-# Log Pro
+# log_pro
 
 [![pub package](https://img.shields.io/pub/v/log_pro.svg?logo=dart&logoColor=00b9fc)](https://pub.dartlang.org/packages/log_pro)
 [![Last Commits](https://img.shields.io/github/last-commit/EslamFares/Log_Pro?logo=git&logoColor=white)](https://github.com/EslamFares/Log_Pro/commits/main)
@@ -6,7 +6,7 @@
 [![Code size](https://img.shields.io/github/languages/code-size/EslamFares/Log_Pro?logo=github&logoColor=white)](https://github.com/EslamFares/Log_Pro)
 [![License](https://img.shields.io/github/license/EslamFares/Log_Pro?logo=open-source-initiative&logoColor=green)](https://github.com/EslamFares/Log_Pro/blob/main/LICENSE)
 
-Logger is a custom logging package for Flutter that simplifies tracking and debugging app behavior. It supports various log levels, such as debug, info, warning, and error, allowing developers to categorize and filter logs effectively.<br>
+log_pro is a custom logging package for Flutter that simplifies tracking and debugging app behavior. It supports various log levels, such as debug, info, warning, and error, allowing developers to categorize and filter logs effectively.<br>
 
 
 ### Resources:
@@ -86,7 +86,6 @@ LogPro logPro = LogPro();
     logPro.green("green");
     logPro.risk("risk");
     logPro.whiteBlack("whiteBlack");
-    logPro.normal("normal");
     logPro.prt("go", logColor: LogColors.red);
 
 ```
