@@ -14,9 +14,9 @@ log_pro is a custom logging package for Flutter that simplifies tracking and deb
 - [Pub Package](https://pub.dev/packages/log_pro)
 - [GitHub Repository](https://github.com/EslamFares/Log_Pro)
 
-## LogPro Flutter vscode extension
-- For faster and easier use of the package through shortcuts that can be easily reassigned from the package settings. [logpro flutter vscode extension](https://marketplace.visualstudio.com/items?itemName=EslamFares.logpro-flutter)
-
+### <a href="https://marketplace.visualstudio.com/items?itemName=EslamFares.logpro-flutter" target="_blank">LogPro Flutter vscode extension</a>
+- For faster and easier use of the package through shortcuts that can be easily reassigned from the package settings. 
+<a href="https://marketplace.visualstudio.com/items?itemName=EslamFares.logpro-flutter" target="_blank">Open in Visual Studio Code Marketplace</a>
 ## Getting Started
 
 Just create an instance of `LogPro` and start logging:
