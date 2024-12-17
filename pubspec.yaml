@@ -1,6 +1,6 @@
 name: log_pro
 description: "log_pro is a custom logging package for Flutter that simplifies tracking and debugging app behavior."
-version: 0.0.3
+version: 0.0.4
 
 homepage: https://github.com/EslamFares/Log_Pro
 repository: https://github.com/EslamFares/Log_Pro
