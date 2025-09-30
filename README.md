@@ -32,27 +32,33 @@ logPro.error("error");
 ```
  [log] 
       ╔════════════════════════════════════════════════════════════════════════════════════
-      ║[ERROR][00:26:54.170]:
+      ║❌ [ERROR][00:26:54.170]:
+      ║────────────────────────────────────────────────────────────────────────────────────
       ║message
       ╚════════════════════════════════════════════════════════════════════════════════════
 ```
 <br> `Simple styles` <br>
 ```diff
-+ [log] [ERROR]:message
++ ❌ [ERROR] [12:27:54.083]:An error occurred.
 ```
 
 <br> `Use Print instead of log` <br>
 ```diff
 + D/EGL_emulation(24250): app_time_stats: avg=376.97ms min=9.17ms max=4292.33ms count=12
-+ I/flutter (24250): 
-+ I/flutter (24250): ╔════════════════════════════════════════════════════════════════════════════════════
-+ I/flutter (24250): ║[ERROR][00:41:29.720]:
-+ I/flutter (24250): ║Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-+ I/flutter (24250): ║Ipsum has been the industry's standard dummy text ever since the 1500s, when an
-+ I/flutter (24250): ║unknown printer took a galley of type and scrambled it to make a type specimen book.
-+ I/flutter (24250): ║It has survived not only five centuries, but also the leap into electronic
-+ I/flutter (24250): ║typesetting, remaining essenti
-+ I/flutter (24250): ╚════════════════════════════════════════════════════════════════════════════════════
++ 
++ ╔════════════════════════════════════════════════════════════════════════════════════
++ ║❌ [ERROR][00:41:29.720]:
++ ║────────────────────────────────────────────────────────────────────────────────────
++ ║Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
++ ║Ipsum has been the industry's standard dummy text ever since the 1500s, when an
++ ║unknown printer took a galley of type and scrambled it to make a type specimen book.
++ ║It has survived not only five centuries, but also the leap into electronic
++ ║typesetting, remaining essenti
++ ║────────────────────────────────────────────────────────────────────────────────────
++ ║  #0      LogPro.info (package:log_pro/log_pro.dart:212:48)       log_pro.dart:212
++ ║  #1      main (file:///Users/flutter/app/main.dart:18:10)                main.dart:18
++ ║  #2      main (file:///Users/flutter/app/log_pro_test.dart:7:6)           log_pro_test.dart:7
++ ╚════════════════════════════════════════════════════════════════════════════════════
 +
 ```
 
