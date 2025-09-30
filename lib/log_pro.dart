@@ -7,7 +7,7 @@ import 'dart:developer';
 class LogPro {
   /// Indicates if logging is enabled.
   final bool _isLoggingEnabled;
-  final String _title;
+  final String? _title;
   final int _lineLength;
   final String? _lineShape;
   final bool _msgStartInNewLine;
@@ -24,7 +24,7 @@ class LogPro {
   /// Creates a [LogPro] instance with customizable logging options.
   LogPro({
     bool isLoggingEnabled = true,
-    String title = "Logpro",
+    String? title,
     int lineLength = 85,
     String? lineShape,
     bool msgStartInNewLine = true,
@@ -58,6 +58,7 @@ class LogPro {
     String message, {
     required LogColors logColor,
     String? title,
+    String? emoji,
     String? lineShape,
     int? lineLength,
     String? time,
@@ -73,7 +74,7 @@ class LogPro {
     String? customColorANSI,
     bool? usePrint,
   }) {
-    title = title ?? _title;
+    title = _title ?? title;
     lineShape = lineShape ?? _lineShape;
     lineLength = lineLength ?? _lineLength;
     msgStartInNewLine = msgStartInNewLine ?? _msgStartInNewLine;
@@ -116,7 +117,15 @@ class LogPro {
         isStart: false,
         simple: simpleBorderOneLine);
 
-    String logTitle = _logTitleSameLength(title, makeTitleSameWidth);
+    String logEmoji = emoji == null
+        ? ""
+        : _logTitleSameLength(emoji, makeTitleSameWidth, addBrackets: false);
+    String logTitle = title == null
+        ? ""
+        : _logTitleSameLength(
+            title,
+            makeTitleSameWidth,
+          );
 
     String messageLog = splitMsgToSameLineLength
         ? _splitMsg(message,
@@ -133,7 +142,9 @@ class LogPro {
     String lineDivider = "$enter$lineDividerLeading${'─' * (_lineLength - 1)}";
     String endLine = '$enter$lineEnd';
     String dot = ":";
-    String titleSimple = "$middleLineLeading$logTitle$currentTime$dot";
+    String titleEmoji = "$logEmoji $logTitle";
+    String titleEmojiTime = "$titleEmoji $currentTime";
+    String titleSimple = "$middleLineLeading$titleEmojiTime$dot";
     String titleFull =
         _fullLength(titleSimple, fullLineTitleAndTime, length: lineLength);
     String stackTraceString = stackTrace != null
@@ -144,7 +155,7 @@ class LogPro {
     if (isLoggingEnabled) {
       if (simpleShapeLog) {
         _usePrintHandel(
-            '$color$checkcustomColor$logTitle$dot$message$stackTraceString$_reset',
+            '$color$checkcustomColor$titleEmojiTime$dot$message$stackTraceString$_reset',
             usePrint: usePrint);
       } else {
         _usePrintHandel(
@@ -155,59 +166,95 @@ class LogPro {
   }
 
 //!=========================================================================
-  ///error log function red color
-  void error(String message, {StackTrace? stackTrace}) => prt(message,
-      logColor: LogColors.red,
-      title: 'ERROR',
-      stackTrace: stackTrace ?? StackTrace.current);
+  ///error log [❌ Red 🔴]
+  void error(String message,
+          {StackTrace? stackTrace, String? title, String? emoji}) =>
+      prt(message,
+          logColor: LogColors.red,
+          title: 'ERROR',
+          emoji: '❌',
+          stackTrace: stackTrace ?? StackTrace.current);
 
-  /// risk log function
-  void risk(String message, {StackTrace? stackTrace}) => prt(message,
-      logColor: LogColors.redBGWhite,
-      title: 'RISK',
-      stackTrace: stackTrace ?? StackTrace.current);
+  /// risk log [🚨 white text , Red backgroung ⚪️🔴]
+  void risk(String message,
+          {StackTrace? stackTrace, String? title, String? emoji}) =>
+      prt(message,
+          logColor: LogColors.redBGWhite,
+          title: title ?? 'RISK',
+          emoji: emoji ?? '🚨',
+          stackTrace: stackTrace ?? StackTrace.current);
 
-  /// normal log function
-  void normal(String message, {StackTrace? stackTrace}) => prt(message,
-      logColor: LogColors.blue,
-      title: 'NORMAL',
-      stackTrace: stackTrace ?? StackTrace.current);
+  /// normal log [👍 Blue 🔵]
+  void normal(String message,
+          {StackTrace? stackTrace, String? title, String? emoji}) =>
+      prt(message,
+          logColor: LogColors.blue,
+          title: title ?? 'NORMAL',
+          emoji: emoji ?? '👍',
+          stackTrace: stackTrace ?? StackTrace.current);
 
-  /// warning log function
-  void warning(String message, {StackTrace? stackTrace}) => prt(message,
-      logColor: LogColors.yellow,
-      title: 'WARNING',
-      stackTrace: stackTrace ?? StackTrace.current);
+  /// warning log [⚠️ yellow 🟡]
+  void warning(String message,
+          {StackTrace? stackTrace, String? title, String? emoji}) =>
+      prt(message,
+          logColor: LogColors.yellow,
+          title: title ?? 'WARNING',
+          emoji: emoji ?? '⚠️',
+          stackTrace: stackTrace ?? StackTrace.current);
 
-  /// info log function
-  void info(String message, {StackTrace? stackTrace}) => prt(message,
-      logColor: LogColors.white,
-      title: 'INFO',
-      stackTrace: stackTrace ?? StackTrace.current);
+  /// info log [☑️ white ⚪️]
+  void info(String message,
+          {StackTrace? stackTrace, String? title, String? emoji}) =>
+      prt(message,
+          logColor: LogColors.white,
+          title: title ?? 'INFO',
+          emoji: emoji ?? '☑️',
+          stackTrace: stackTrace ?? StackTrace.current);
 
-  /// magenta log function
-  void magenta(String message, {StackTrace? stackTrace}) => prt(message,
-      logColor: LogColors.magenta,
-      title: 'Magenta',
-      stackTrace: stackTrace ?? StackTrace.current);
+  /// magenta log [💜 magenta 🟣]
+  void magenta(String message,
+          {StackTrace? stackTrace, String? title, String? emoji}) =>
+      prt(message,
+          logColor: LogColors.magenta,
+          title: title ?? 'Magenta',
+          emoji: emoji ?? '💜',
+          stackTrace: stackTrace ?? StackTrace.current);
 
-  /// logit log function
-  void logit(String message, {StackTrace? stackTrace}) => prt(message,
-      logColor: LogColors.green, stackTrace: stackTrace ?? StackTrace.current);
+  /// logit log [👀 green 🟢]
+  void logit(String message,
+          {StackTrace? stackTrace, String? title, String? emoji}) =>
+      prt(message,
+          logColor: LogColors.green,
+          title: title ?? 'LOGIT',
+          emoji: emoji ?? '👀',
+          stackTrace: stackTrace ?? StackTrace.current);
 
-  /// grey log function
-  void grey(String message, {StackTrace? stackTrace}) => prt(message,
-      logColor: LogColors.grayBGWhite,
-      stackTrace: stackTrace ?? StackTrace.current);
+  /// grey log [🩶 gray ⬜️]
+  void grey(String message,
+          {StackTrace? stackTrace, String? title, String? emoji}) =>
+      prt(message,
+          logColor: LogColors.grayBGWhite,
+          title: title ?? 'GREY',
+          emoji: emoji ?? '🩶',
+          stackTrace: stackTrace ?? StackTrace.current);
 
-  /// green log function
-  void green(String message, {StackTrace? stackTrace}) => prt(message,
-      logColor: LogColors.green, stackTrace: stackTrace ?? StackTrace.current);
+  /// green log [🌱 green 🟢]
+  void green(String message,
+          {StackTrace? stackTrace, String? title, String? emoji}) =>
+      prt(message,
+          logColor: LogColors.green,
+          title: title ?? 'GREEN',
+          emoji: emoji ?? '🌱',
+          stackTrace: stackTrace ?? StackTrace.current);
 
-  /// whiteBlack log function
-  void whiteBlack(String message, {StackTrace? stackTrace}) => prt(message,
-      logColor: LogColors.whiteBGBlack,
-      stackTrace: stackTrace ?? StackTrace.current);
+  /// whiteBlack log [🖨️ black & white ⚫️⚪️]
+  void whiteBlack(String message,
+          {StackTrace? stackTrace, String? title, String? emoji}) =>
+      prt(message,
+          logColor: LogColors.whiteBGBlack,
+          title: title ?? 'BLACK & WHITE',
+          emoji: emoji ?? '🖨️',
+          stackTrace: stackTrace ?? StackTrace.current);
 
 //!=========================================================================
   static const String _reset = '\x1B[0m';
@@ -344,14 +391,15 @@ class LogPro {
   }
 
   String _logTitleSameLength(String title, bool makeTitleSameWidth,
-      {int length = 10}) {
+      {int length = 10, bool addBrackets = true}) {
     String logTitle = title;
     if (makeTitleSameWidth) {
       if (title.length < length) {
         logTitle = (title + ' ' * (length - title.length));
       }
     }
-    return "[$logTitle]";
+    String logTitleWithBrackets = addBrackets ? "[$logTitle]" : logTitle;
+    return logTitleWithBrackets;
   }
 
   String _getColorFromlogColorEnum(LogColors color) {
