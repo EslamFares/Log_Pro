@@ -19,6 +19,7 @@ class LogPro {
   final bool _fullLineTitleAndTime;
   final bool _simpleShapeLog;
   final bool _usePrint;
+  final int _stackTraceLinesToShow;
 
   /// Creates a [LogPro] instance with customizable logging options.
   LogPro({
@@ -27,7 +28,7 @@ class LogPro {
     int lineLength = 85,
     String? lineShape,
     bool msgStartInNewLine = true,
-    bool splitMsgToSameLineLength = true,
+    bool splitMsgToSameLineLength = false,
     bool splitMsgToSameLineLengthAddLeading = true,
     bool addEnterAtFirst = true,
     bool makeTitleSameWidth = false,
@@ -35,7 +36,9 @@ class LogPro {
     bool fullLineTitleAndTime = false,
     bool simpleShapeLog = false,
     bool usePrint = false,
-  })  : _usePrint = usePrint,
+    int stackTraceLinesToShow = 3,
+  })  : _stackTraceLinesToShow = stackTraceLinesToShow,
+        _usePrint = usePrint,
         _simpleShapeLog = simpleShapeLog,
         _fullLineTitleAndTime = fullLineTitleAndTime,
         _simpleBorderOneLine = simpleBorderOneLine,
@@ -66,6 +69,7 @@ class LogPro {
     bool? splitMsgToSameLineLengthAddLeading,
     bool? simpleShapeLog,
     bool? addEnterAtFirst,
+    StackTrace? stackTrace,
     String? customColorANSI,
     bool? usePrint,
   }) {
@@ -125,19 +129,26 @@ class LogPro {
         ? ('$enter$middleLineLeading$messageLog')
         : messageLog;
     String startLine = addEnterAtFirst ? '$enter$line$enter' : '$line$enter';
+    String lineDividerLeading = simpleShapeLog ? "" : middleLineLeading;
+    String lineDivider = "$enter$lineDividerLeading${'─' * (_lineLength - 1)}";
     String endLine = '$enter$lineEnd';
     String dot = ":";
     String titleSimple = "$middleLineLeading$logTitle$currentTime$dot";
     String titleFull =
         _fullLength(titleSimple, fullLineTitleAndTime, length: lineLength);
+    String stackTraceString = stackTrace != null
+        ? _formatStackTrace(stackTrace, _stackTraceLinesToShow, enter,
+            middleLineLeading, simpleShapeLog, lineDivider)
+        : '';
 
     if (isLoggingEnabled) {
       if (simpleShapeLog) {
-        _usePrintHandel('$color$checkcustomColor$logTitle$dot$message$_reset',
+        _usePrintHandel(
+            '$color$checkcustomColor$logTitle$dot$message$stackTraceString$_reset',
             usePrint: usePrint);
       } else {
         _usePrintHandel(
-            '$color$checkcustomColor$startLine$titleFull$msgInNewLine$endLine$_reset',
+            '$color$checkcustomColor$startLine$titleFull$lineDivider$msgInNewLine$stackTraceString$endLine$_reset',
             usePrint: usePrint);
       }
     } //  log('$_red[ERROR]: $message$_reset');
@@ -145,41 +156,58 @@ class LogPro {
 
 //!=========================================================================
   ///error log function red color
-  void error(String message) =>
-      prt(message, logColor: LogColors.red, title: 'ERROR');
+  void error(String message, {StackTrace? stackTrace}) => prt(message,
+      logColor: LogColors.red,
+      title: 'ERROR',
+      stackTrace: stackTrace ?? StackTrace.current);
 
   /// risk log function
-  void risk(String message, {bool simple = false}) =>
-      prt(message, logColor: LogColors.redBGWhite, title: 'RISK');
+  void risk(String message, {StackTrace? stackTrace}) => prt(message,
+      logColor: LogColors.redBGWhite,
+      title: 'RISK',
+      stackTrace: stackTrace ?? StackTrace.current);
 
   /// normal log function
-  void normal(String message) =>
-      prt(message, logColor: LogColors.blue, title: 'NORMAL');
+  void normal(String message, {StackTrace? stackTrace}) => prt(message,
+      logColor: LogColors.blue,
+      title: 'NORMAL',
+      stackTrace: stackTrace ?? StackTrace.current);
 
   /// warning log function
-  void warning(String message) =>
-      prt(message, logColor: LogColors.yellow, title: 'WARNING');
+  void warning(String message, {StackTrace? stackTrace}) => prt(message,
+      logColor: LogColors.yellow,
+      title: 'WARNING',
+      stackTrace: stackTrace ?? StackTrace.current);
 
   /// info log function
-  void info(String message) =>
-      prt(message, logColor: LogColors.white, title: 'INFO');
+  void info(String message, {StackTrace? stackTrace}) => prt(message,
+      logColor: LogColors.white,
+      title: 'INFO',
+      stackTrace: stackTrace ?? StackTrace.current);
 
   /// magenta log function
-  void magenta(String message) =>
-      prt(message, logColor: LogColors.magenta, title: 'Magenta');
+  void magenta(String message, {StackTrace? stackTrace}) => prt(message,
+      logColor: LogColors.magenta,
+      title: 'Magenta',
+      stackTrace: stackTrace ?? StackTrace.current);
 
   /// logit log function
-  void logit(String message) => prt(message, logColor: LogColors.green);
+  void logit(String message, {StackTrace? stackTrace}) => prt(message,
+      logColor: LogColors.green, stackTrace: stackTrace ?? StackTrace.current);
 
   /// grey log function
-  void grey(String message) => prt(message, logColor: LogColors.grayBGWhite);
+  void grey(String message, {StackTrace? stackTrace}) => prt(message,
+      logColor: LogColors.grayBGWhite,
+      stackTrace: stackTrace ?? StackTrace.current);
 
   /// green log function
-  void green(String message) => prt(message, logColor: LogColors.green);
+  void green(String message, {StackTrace? stackTrace}) => prt(message,
+      logColor: LogColors.green, stackTrace: stackTrace ?? StackTrace.current);
 
   /// whiteBlack log function
-  void whiteBlack(String message) =>
-      prt(message, logColor: LogColors.whiteBGBlack);
+  void whiteBlack(String message, {StackTrace? stackTrace}) => prt(message,
+      logColor: LogColors.whiteBGBlack,
+      stackTrace: stackTrace ?? StackTrace.current);
 
 //!=========================================================================
   static const String _reset = '\x1B[0m';
@@ -240,6 +268,23 @@ class LogPro {
       }
     }
     return textLog;
+  }
+
+  String _formatStackTrace(StackTrace stackTrace, int linesToShow, String enter,
+      String leading, bool simpleShapeLog, String lineDivider) {
+    if (linesToShow <= 0) return '';
+
+    final traceLines = stackTrace.toString().split('\n');
+    final takeCount =
+        linesToShow > traceLines.length ? traceLines.length : linesToShow;
+
+    String leadingUsed = simpleShapeLog ? "" : leading;
+    final formattedLines = traceLines
+        .take(takeCount)
+        .map((line) => '$enter$leadingUsed  $line')
+        .join('');
+
+    return '$lineDivider$formattedLines';
   }
 
   String _logProTimeFormater(
