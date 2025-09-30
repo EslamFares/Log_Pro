@@ -26,4 +26,6 @@ screenshots:
     path: assets/img/simple_shape.png
   - description: "Use Print instead of log"
     path: assets/img/prt1.png
+  - description: "stack Trace"
+    path: assets/img/2.png
 
