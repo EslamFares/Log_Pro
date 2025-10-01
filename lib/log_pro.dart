@@ -74,7 +74,6 @@ class LogPro {
     String? customColorANSI,
     bool? usePrint,
   }) {
-    title = _sameTitleForAll ?? title;
     lineShape = lineShape ?? _lineShape;
     lineLength = lineLength ?? _lineLength;
     msgStartInNewLine = msgStartInNewLine ?? _msgStartInNewLine;
@@ -108,7 +107,7 @@ class LogPro {
     //============================================================
     bool isLoggingEnabled = _isLoggingEnabled;
     //============================================================
-    String currentTime = _logProTimeFormater(customTime: time);
+    String currentTime = _logProTimeFormater(customTime: time, fullTime: true);
     String line = _line(
         shape: lineShape, length: lineLength, simple: simpleBorderOneLine);
     String lineEnd = _line(
@@ -124,6 +123,12 @@ class LogPro {
         ? ""
         : _logTitleSameLength(
             title,
+            makeTitleSameWidth,
+          );
+    String logSameTitleForAll = _sameTitleForAll == null
+        ? ""
+        : _logTitleSameLength(
+            _sameTitleForAll,
             makeTitleSameWidth,
           );
 
@@ -142,7 +147,7 @@ class LogPro {
     String lineDivider = "$enter$lineDividerLeading${'─' * (_lineLength - 1)}";
     String endLine = '$enter$lineEnd';
     String dot = ":";
-    String titleEmoji = "$logEmoji $logTitle";
+    String titleEmoji = "$logEmoji $logTitle $logSameTitleForAll";
     String titleEmojiTime = "$titleEmoji $currentTime";
     String titleSimple = "$middleLineLeading$titleEmojiTime$dot";
     String titleFull =

@@ -2,7 +2,9 @@ import 'package:log_pro/log_pro.dart';
 
 void main() async {
   // Create a LogPro instance
-  final logPro = LogPro();
+  final logPro = LogPro(
+    sameTitleForAll: "LogPro",
+  );
   final logPro2 = LogPro(simpleShapeLog: true, stackTraceLinesToShow: 0);
   //stop log
   // final logPro = LogPro(isLoggingEnabled: false);
