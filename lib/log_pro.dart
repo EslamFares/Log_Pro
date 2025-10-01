@@ -24,28 +24,30 @@ class LogPro {
   final bool _showTime;
   final bool _showTimeWithMilliseconds;
   final bool _showTimeWithMicroseconds;
+  final bool _showEmojis;
 
   /// Creates a [LogPro] instance with customizable logging options.
-  LogPro(
-      {bool isLoggingEnabled = true,
-      String? sameTitleForAll,
-      int lineLength = 100,
-      String? lineShape,
-      bool msgStartInNewLine = true,
-      bool splitMsgToSameLineLength = false,
-      bool splitMsgToSameLineLengthAddLeading = true,
-      bool addEnterAtFirst = true,
-      bool makeTitleSameWidth = false,
-      bool simpleBorderOneLine = false,
-      bool fullLineTitleAndTime = false,
-      bool simpleShapeLog = false,
-      bool usePrint = false,
-      int stackTraceLinesToShow = 3,
-      bool showDate = true,
-      bool showTime = true,
-      bool showTimeWithMilliseconds = true,
-      bool showTimeWithMicroseconds = false})
-      : _stackTraceLinesToShow = stackTraceLinesToShow,
+  LogPro({
+    bool isLoggingEnabled = true,
+    String? sameTitleForAll,
+    int lineLength = 100,
+    String? lineShape,
+    bool msgStartInNewLine = true,
+    bool splitMsgToSameLineLength = false,
+    bool splitMsgToSameLineLengthAddLeading = true,
+    bool addEnterAtFirst = true,
+    bool makeTitleSameWidth = false,
+    bool simpleBorderOneLine = false,
+    bool fullLineTitleAndTime = false,
+    bool simpleShapeLog = false,
+    bool usePrint = false,
+    int stackTraceLinesToShow = 3,
+    bool showDate = true,
+    bool showTime = true,
+    bool showTimeWithMilliseconds = true,
+    bool showTimeWithMicroseconds = false,
+    bool showEmojis = true,
+  })  : _stackTraceLinesToShow = stackTraceLinesToShow,
         _usePrint = usePrint,
         _simpleShapeLog = simpleShapeLog,
         _fullLineTitleAndTime = fullLineTitleAndTime,
@@ -63,7 +65,8 @@ class LogPro {
         _showDate = showDate,
         _showTime = showTime,
         _showTimeWithMilliseconds = showTimeWithMilliseconds,
-        _showTimeWithMicroseconds = showTimeWithMicroseconds;
+        _showTimeWithMicroseconds = showTimeWithMicroseconds,
+        _showEmojis = showEmojis;
 
   /// Creates a copy of this `LogPro` instance but with the given fields
   /// replaced with the new values.
@@ -87,6 +90,7 @@ class LogPro {
     bool? showTime,
     bool? showTimeWithMilliseconds,
     bool? showTimeWithMicroseconds,
+    bool? showEmojis,
   }) {
     return LogPro(
       isLoggingEnabled: isLoggingEnabled ?? _isLoggingEnabled,
@@ -111,6 +115,7 @@ class LogPro {
           showTimeWithMilliseconds ?? _showTimeWithMilliseconds,
       showTimeWithMicroseconds:
           showTimeWithMicroseconds ?? _showTimeWithMicroseconds,
+      showEmojis: showEmojis ?? _showEmojis,
     );
   }
 
@@ -183,21 +188,17 @@ class LogPro {
         isStart: false,
         simple: simpleBorderOneLine);
 
-    String logEmoji = emoji == null
-        ? ""
-        : _logTitleSameLength(emoji, makeTitleSameWidth, addBrackets: false);
-    String logTitle = title == null
-        ? ""
-        : _logTitleSameLength(
-            title,
-            makeTitleSameWidth,
-          );
-    String logSameTitleForAll = _sameTitleForAll == null
-        ? ""
-        : _logTitleSameLength(
-            _sameTitleForAll,
-            makeTitleSameWidth,
-          );
+    String? logEmoji = _showEmojis
+        ? _logTitleSameLength(emoji, makeTitleSameWidth, addBrackets: false)
+        : null;
+    String logTitle = _logTitleSameLength(
+      title,
+      makeTitleSameWidth,
+    );
+    String logSameTitleForAll = _logTitleSameLength(
+      _sameTitleForAll,
+      makeTitleSameWidth,
+    );
 
     String messageLog = splitMsgToSameLineLength
         ? _splitMsg(message,
@@ -214,10 +215,11 @@ class LogPro {
     String lineDivider = "$enter$lineDividerLeading${'┄' * (_lineLength - 1)}";
     String endLine = '$enter$lineEnd';
     String dot = ":";
-    String textCheckTrim(text) => text.trim().isNotEmpty ? " $text" : "";
+    String textCheckTrim(String? text) =>
+        text != null && text.trim().isNotEmpty ? "$text " : "";
     String titleEmoji =
-        "$logEmoji${textCheckTrim(logTitle)}${textCheckTrim(logSameTitleForAll)}";
-    String titleEmojiTime = "$titleEmoji $currentTime";
+        "${textCheckTrim(logEmoji)}${textCheckTrim(logTitle)}${textCheckTrim(logSameTitleForAll)}";
+    String titleEmojiTime = "$titleEmoji$currentTime";
     String titleSimple = "$middleLineLeading$titleEmojiTime$dot";
     String titleFull =
         _fullLength(titleSimple, fullLineTitleAndTime, length: lineLength);
@@ -242,92 +244,167 @@ class LogPro {
 //!=========================================================================
   ///error log [❌ Red 🔴]
   void error(String message,
-          {StackTrace? stackTrace, String? title, String? emoji}) =>
+          {StackTrace? stackTrace,
+          String? title = 'ERROR',
+          String? emoji = '❌'}) =>
       prt(message,
           logColor: LogColors.red,
-          title: 'ERROR',
-          emoji: '❌',
+          title: title,
+          emoji: emoji,
+          stackTrace: stackTrace ?? StackTrace.current);
+
+  ///e [error] log [⛔ Red 🔴]
+  void e(String message,
+          {StackTrace? stackTrace,
+          String? title, //= 'ERROR',
+          String? emoji = '⛔'}) =>
+      prt(message,
+          logColor: LogColors.red,
+          title: title,
+          emoji: emoji,
           stackTrace: stackTrace ?? StackTrace.current);
 
   /// risk log [🚨 white text , Red backgroung ⚪️🔴]
   void risk(String message,
-          {StackTrace? stackTrace, String? title, String? emoji}) =>
+          {StackTrace? stackTrace,
+          String? title = 'RISK',
+          String? emoji = '🚨'}) =>
       prt(message,
           logColor: LogColors.redBGWhite,
-          title: title ?? 'RISK',
-          emoji: emoji ?? '🚨',
+          title: title,
+          emoji: emoji,
           stackTrace: stackTrace ?? StackTrace.current);
 
   /// normal log [👍 Blue 🔵]
   void normal(String message,
-          {StackTrace? stackTrace, String? title, String? emoji}) =>
+          {StackTrace? stackTrace,
+          String? title = 'NORMAL',
+          String? emoji = '👍'}) =>
       prt(message,
           logColor: LogColors.blue,
-          title: title ?? 'NORMAL',
-          emoji: emoji ?? '👍',
+          title: title,
+          emoji: emoji,
+          stackTrace: stackTrace ?? StackTrace.current);
+
+  /// d [debug] log [🐞 Blue 🔵]
+  void d(String message,
+          {StackTrace? stackTrace,
+          String? title, //= 'DEBUG',
+          String? emoji = '🐞'}) =>
+      prt(message,
+          logColor: LogColors.blue,
+          title: title,
+          emoji: emoji,
           stackTrace: stackTrace ?? StackTrace.current);
 
   /// warning log [⚠️ yellow 🟡]
   void warning(String message,
-          {StackTrace? stackTrace, String? title, String? emoji}) =>
+          {StackTrace? stackTrace,
+          String? title = 'WARNING',
+          String? emoji = '⚠️'}) =>
       prt(message,
           logColor: LogColors.yellow,
-          title: title ?? 'WARNING',
-          emoji: emoji ?? '⚠️',
+          title: title,
+          emoji: emoji,
           stackTrace: stackTrace ?? StackTrace.current);
 
-  /// info log [☑️ white ⚪️]
+  /// w [warning] log [⚠️ yellow 🟡]
+  void w(String message,
+          {StackTrace? stackTrace,
+          String? title, //= 'WARNING',
+          String? emoji = '⚠️'}) =>
+      prt(message,
+          logColor: LogColors.yellow,
+          title: title,
+          emoji: emoji,
+          stackTrace: stackTrace ?? StackTrace.current);
+
+  /// info log [💡 white ⚪️]
   void info(String message,
-          {StackTrace? stackTrace, String? title, String? emoji}) =>
+          {StackTrace? stackTrace,
+          String? title = 'INFO',
+          String? emoji = '💡'}) =>
       prt(message,
           logColor: LogColors.white,
-          title: title ?? 'INFO',
-          emoji: emoji ?? '☑️',
+          title: title,
+          emoji: emoji,
+          stackTrace: stackTrace ?? StackTrace.current);
+
+  /// f [failed] log [ ☠️ white ⚪️]
+  void f(String message,
+          {StackTrace? stackTrace,
+          String? title, //= 'Failed',
+          String? emoji = '☠️'}) =>
+      prt(message,
+          logColor: LogColors.white,
+          title: title,
+          emoji: emoji,
           stackTrace: stackTrace ?? StackTrace.current);
 
   /// magenta log [💜 magenta 🟣]
   void magenta(String message,
-          {StackTrace? stackTrace, String? title, String? emoji}) =>
+          {StackTrace? stackTrace,
+          String? title = 'Magenta',
+          String? emoji = '💜'}) =>
       prt(message,
           logColor: LogColors.magenta,
-          title: title ?? 'Magenta',
-          emoji: emoji ?? '💜',
+          title: title,
+          emoji: emoji,
           stackTrace: stackTrace ?? StackTrace.current);
 
   /// logit log [👀 green 🟢]
   void logit(String message,
-          {StackTrace? stackTrace, String? title, String? emoji}) =>
+          {StackTrace? stackTrace,
+          String? title = 'LOGIT',
+          String? emoji = '👀'}) =>
       prt(message,
           logColor: LogColors.green,
-          title: title ?? 'LOGIT',
-          emoji: emoji ?? '👀',
+          title: title,
+          emoji: emoji,
           stackTrace: stackTrace ?? StackTrace.current);
 
-  /// grey log [🩶 gray ⬜️]
+  /// Success log [✅ green 🟢]
+  void s(String message,
+          {StackTrace? stackTrace,
+          String? title, //= 'SUCCESS',
+          String? emoji = '✅'}) =>
+      prt(message,
+          logColor: LogColors.green,
+          title: title,
+          emoji: emoji,
+          stackTrace: stackTrace ?? StackTrace.current);
+
+  /// grey log [🩶 gray ]
   void grey(String message,
-          {StackTrace? stackTrace, String? title, String? emoji}) =>
+          {StackTrace? stackTrace,
+          String? title = 'GREY',
+          String? emoji = '🩶'}) =>
       prt(message,
           logColor: LogColors.grayBGWhite,
-          title: title ?? 'GREY',
-          emoji: emoji ?? '🩶',
+          title: title,
+          emoji: emoji,
           stackTrace: stackTrace ?? StackTrace.current);
 
   /// green log [🌱 green 🟢]
   void green(String message,
-          {StackTrace? stackTrace, String? title, String? emoji}) =>
+          {StackTrace? stackTrace,
+          String? title = 'GREEN',
+          String? emoji = '🌱'}) =>
       prt(message,
           logColor: LogColors.green,
-          title: title ?? 'GREEN',
-          emoji: emoji ?? '🌱',
+          title: title,
+          emoji: emoji,
           stackTrace: stackTrace ?? StackTrace.current);
 
   /// whiteBlack log [🖨️ black & white ⚫️⚪️]
   void whiteBlack(String message,
-          {StackTrace? stackTrace, String? title, String? emoji}) =>
+          {StackTrace? stackTrace,
+          String? title = 'WHITE & BLACK',
+          String? emoji = '🖨️'}) =>
       prt(message,
           logColor: LogColors.whiteBGBlack,
-          title: title ?? 'BLACK & WHITE',
-          emoji: emoji ?? '🖨️',
+          title: title,
+          emoji: emoji,
           stackTrace: stackTrace ?? StackTrace.current);
 
 //!=========================================================================
@@ -487,8 +564,11 @@ class LogPro {
     return line;
   }
 
-  String _logTitleSameLength(String title, bool makeTitleSameWidth,
+  String _logTitleSameLength(String? title, bool makeTitleSameWidth,
       {int length = 10, bool addBrackets = true}) {
+    if (title == null || title.isEmpty) {
+      return '';
+    }
     String logTitle = title;
     if (makeTitleSameWidth) {
       if (title.length < length) {

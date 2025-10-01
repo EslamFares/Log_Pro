@@ -3,7 +3,7 @@ import 'package:log_pro/log_pro.dart';
 void main() async {
   // Create a LogPro instance
   final logPro = LogPro(
-    sameTitleForAll: "LogPro",
+    // sameTitleForAll: "LogPro",
     simpleBorderOneLine: true,
     //
   );
@@ -21,6 +21,13 @@ void main() async {
     usePrint: true,
     isLoggingEnabled: true,
   );
+
+  // Example log messages
+  logPro.w("message");
+  logPro.e("message");
+  logPro.s("message");
+  logPro.f("message");
+  logPro.d("message");
 
   // Example log messages
   logPro.info("This is an informational message.");
