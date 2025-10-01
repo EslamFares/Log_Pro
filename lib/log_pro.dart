@@ -65,6 +65,55 @@ class LogPro {
         _showTimeWithMilliseconds = showTimeWithMilliseconds,
         _showTimeWithMicroseconds = showTimeWithMicroseconds;
 
+  /// Creates a copy of this `LogPro` instance but with the given fields
+  /// replaced with the new values.
+
+  LogPro copyWith({
+    bool? isLoggingEnabled,
+    String? sameTitleForAll,
+    int? lineLength,
+    String? lineShape,
+    bool? msgStartInNewLine,
+    bool? splitMsgToSameLineLength,
+    bool? splitMsgToSameLineLengthAddLeading,
+    bool? addEnterAtFirst,
+    bool? makeTitleSameWidth,
+    bool? simpleBorderOneLine,
+    bool? fullLineTitleAndTime,
+    bool? simpleShapeLog,
+    bool? usePrint,
+    int? stackTraceLinesToShow,
+    bool? showDate,
+    bool? showTime,
+    bool? showTimeWithMilliseconds,
+    bool? showTimeWithMicroseconds,
+  }) {
+    return LogPro(
+      isLoggingEnabled: isLoggingEnabled ?? _isLoggingEnabled,
+      sameTitleForAll: sameTitleForAll ?? _sameTitleForAll,
+      lineLength: lineLength ?? _lineLength,
+      lineShape: lineShape ?? _lineShape,
+      msgStartInNewLine: msgStartInNewLine ?? _msgStartInNewLine,
+      splitMsgToSameLineLength:
+          splitMsgToSameLineLength ?? _splitMsgToSameLineLength,
+      splitMsgToSameLineLengthAddLeading: splitMsgToSameLineLengthAddLeading ??
+          _splitMsgToSameLineLengthAddLeading,
+      addEnterAtFirst: addEnterAtFirst ?? _addEnterAtFirst,
+      makeTitleSameWidth: makeTitleSameWidth ?? _makeTitleSameWidth,
+      simpleBorderOneLine: simpleBorderOneLine ?? _simpleBorderOneLine,
+      fullLineTitleAndTime: fullLineTitleAndTime ?? _fullLineTitleAndTime,
+      simpleShapeLog: simpleShapeLog ?? _simpleShapeLog,
+      usePrint: usePrint ?? _usePrint,
+      stackTraceLinesToShow: stackTraceLinesToShow ?? _stackTraceLinesToShow,
+      showDate: showDate ?? _showDate,
+      showTime: showTime ?? _showTime,
+      showTimeWithMilliseconds:
+          showTimeWithMilliseconds ?? _showTimeWithMilliseconds,
+      showTimeWithMicroseconds:
+          showTimeWithMicroseconds ?? _showTimeWithMicroseconds,
+    );
+  }
+
   ///main function to print or log
   void prt(
     String message, {

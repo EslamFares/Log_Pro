@@ -1,3 +1,3 @@
-## 0.0.7
+## 0.0.8
 
-* add stack Trace and Date Time
+* add stack Trace & Date Time and copy with

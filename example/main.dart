@@ -5,13 +5,17 @@ void main() async {
   final logPro = LogPro(
     sameTitleForAll: "LogPro",
   );
-  final logPro2 = LogPro(simpleShapeLog: true, stackTraceLinesToShow: 0);
+  final logPro2 = logPro.copyWith(
+      sameTitleForAll: "LogPro2",
+      isLoggingEnabled: true,
+      stackTraceLinesToShow: 0);
+
   //stop log
   // final logPro = LogPro(isLoggingEnabled: false);
 
   //use print
   final ptr = LogPro(
-    sameTitleForAll: "LogPro",
+    sameTitleForAll: "LogPro Print",
     usePrint: true,
     isLoggingEnabled: true,
   );
