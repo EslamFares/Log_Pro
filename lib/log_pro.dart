@@ -20,24 +20,32 @@ class LogPro {
   final bool _simpleShapeLog;
   final bool _usePrint;
   final int _stackTraceLinesToShow;
+  final bool _showDate;
+  final bool _showTime;
+  final bool _showTimeWithMilliseconds;
+  final bool _showTimeWithMicroseconds;
 
   /// Creates a [LogPro] instance with customizable logging options.
-  LogPro({
-    bool isLoggingEnabled = true,
-    String? sameTitleForAll,
-    int lineLength = 85,
-    String? lineShape,
-    bool msgStartInNewLine = true,
-    bool splitMsgToSameLineLength = false,
-    bool splitMsgToSameLineLengthAddLeading = true,
-    bool addEnterAtFirst = true,
-    bool makeTitleSameWidth = false,
-    bool simpleBorderOneLine = false,
-    bool fullLineTitleAndTime = false,
-    bool simpleShapeLog = false,
-    bool usePrint = false,
-    int stackTraceLinesToShow = 3,
-  })  : _stackTraceLinesToShow = stackTraceLinesToShow,
+  LogPro(
+      {bool isLoggingEnabled = true,
+      String? sameTitleForAll,
+      int lineLength = 85,
+      String? lineShape,
+      bool msgStartInNewLine = true,
+      bool splitMsgToSameLineLength = false,
+      bool splitMsgToSameLineLengthAddLeading = true,
+      bool addEnterAtFirst = true,
+      bool makeTitleSameWidth = false,
+      bool simpleBorderOneLine = false,
+      bool fullLineTitleAndTime = false,
+      bool simpleShapeLog = false,
+      bool usePrint = false,
+      int stackTraceLinesToShow = 3,
+      bool showDate = true,
+      bool showTime = true,
+      bool showTimeWithMilliseconds = true,
+      bool showTimeWithMicroseconds = false})
+      : _stackTraceLinesToShow = stackTraceLinesToShow,
         _usePrint = usePrint,
         _simpleShapeLog = simpleShapeLog,
         _fullLineTitleAndTime = fullLineTitleAndTime,
@@ -51,7 +59,11 @@ class LogPro {
         _lineShape = lineShape,
         _lineLength = lineLength,
         _sameTitleForAll = sameTitleForAll,
-        _isLoggingEnabled = isLoggingEnabled;
+        _isLoggingEnabled = isLoggingEnabled,
+        _showDate = showDate,
+        _showTime = showTime,
+        _showTimeWithMilliseconds = showTimeWithMilliseconds,
+        _showTimeWithMicroseconds = showTimeWithMicroseconds;
 
   ///main function to print or log
   void prt(
@@ -107,7 +119,13 @@ class LogPro {
     //============================================================
     bool isLoggingEnabled = _isLoggingEnabled;
     //============================================================
-    String currentTime = _logProTimeFormater(customTime: time, fullTime: true);
+    String currentTime = _logProTimeFormater(
+      customTime: time,
+      showDate: _showDate,
+      showTime: _showTime,
+      withMilliseconds: _showTimeWithMilliseconds,
+      withMicroseconds: _showTimeWithMicroseconds,
+    );
     String line = _line(
         shape: lineShape, length: lineLength, simple: simpleBorderOneLine);
     String lineEnd = _line(
@@ -345,35 +363,47 @@ class LogPro {
     return '$lineDivider$formattedLines';
   }
 
-  String _logProTimeFormater(
-      {bool fullTime = false,
-      bool timeOnly = true,
-      bool onlyDate = false,
-      String? customTime,
-      bool withMilliseconds = true,
-      bool withMicroSeconds = false}) {
-    String time = DateTime.now().toString();
+  String _logProTimeFormater({
+    String? customTime,
+    bool showDate = true,
+    bool showTime = true,
+    bool withMilliseconds = true,
+    bool withMicroseconds = false,
+  }) {
     if (customTime != null) return "[$customTime]";
-    if (onlyDate) {
-      time = time.substring(0, 10);
-    } else if (timeOnly) {
-      time = time.substring(11, 19);
-      if (withMilliseconds) {
-        time += '.${DateTime.now().millisecond.toString().padLeft(3, '0')}';
-        if (withMicroSeconds) {
-          time += '.${DateTime.now().microsecond.toString().padLeft(3, '0')}';
-        }
-      }
-    } else if (fullTime) {
-      time = time.substring(0, 19);
-      if (withMilliseconds) {
-        time += '.${DateTime.now().millisecond.toString().padLeft(3, '0')}';
-        if (withMicroSeconds) {
-          time += '.${DateTime.now().microsecond.toString().padLeft(3, '0')}';
-        }
-      }
+
+    if (!showDate && !showTime) {
+      return '';
     }
-    return "[$time]";
+
+    final now = DateTime.now(); // Single timestamp for consistency
+    final parts = <String>[];
+
+    if (showDate) {
+      parts.add(now.toString().substring(0, 10));
+    }
+
+    if (showTime) {
+      parts.add(now.toString().substring(11, 19));
+    }
+
+    // Combine date and time with a space if both are present
+    var timeString = parts.join(' ');
+
+    // Add milliseconds/microseconds, with a dot separator if there's already a time/date part.
+    if (withMilliseconds || withMicroseconds) {
+      final msBuffer = StringBuffer();
+      if (withMilliseconds) {
+        msBuffer.write(now.millisecond.toString().padLeft(3, '0'));
+      }
+      if (withMicroseconds) {
+        msBuffer.write(now.microsecond.toString().padLeft(3, '0'));
+      }
+      timeString =
+          timeString.isEmpty ? msBuffer.toString() : '$timeString.$msBuffer';
+    }
+
+    return '[$timeString]';
   }
 
   String _line(
