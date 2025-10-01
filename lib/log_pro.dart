@@ -7,7 +7,7 @@ import 'dart:developer';
 class LogPro {
   /// Indicates if logging is enabled.
   final bool _isLoggingEnabled;
-  final String? _title;
+  final String? _sameTitleForAll;
   final int _lineLength;
   final String? _lineShape;
   final bool _msgStartInNewLine;
@@ -24,7 +24,7 @@ class LogPro {
   /// Creates a [LogPro] instance with customizable logging options.
   LogPro({
     bool isLoggingEnabled = true,
-    String? title,
+    String? sameTitleForAll,
     int lineLength = 85,
     String? lineShape,
     bool msgStartInNewLine = true,
@@ -50,7 +50,7 @@ class LogPro {
         _msgStartInNewLine = msgStartInNewLine,
         _lineShape = lineShape,
         _lineLength = lineLength,
-        _title = title,
+        _sameTitleForAll = sameTitleForAll,
         _isLoggingEnabled = isLoggingEnabled;
 
   ///main function to print or log
@@ -74,7 +74,7 @@ class LogPro {
     String? customColorANSI,
     bool? usePrint,
   }) {
-    title = _title ?? title;
+    title = _sameTitleForAll ?? title;
     lineShape = lineShape ?? _lineShape;
     lineLength = lineLength ?? _lineLength;
     msgStartInNewLine = msgStartInNewLine ?? _msgStartInNewLine;
@@ -321,7 +321,13 @@ class LogPro {
       String leading, bool simpleShapeLog, String lineDivider) {
     if (linesToShow <= 0) return '';
 
-    final traceLines = stackTrace.toString().split('\n');
+    final traceLines = stackTrace
+        .toString()
+        .split('\n')
+        .where((line) => !line.contains('package:log_pro/'));
+
+    if (traceLines.isEmpty) return '';
+
     final takeCount =
         linesToShow > traceLines.length ? traceLines.length : linesToShow;
 

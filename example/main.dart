@@ -9,7 +9,7 @@ void main() async {
 
   //use print
   final ptr = LogPro(
-    title: "LogPro",
+    sameTitleForAll: "LogPro",
     usePrint: true,
     isLoggingEnabled: true,
   );
