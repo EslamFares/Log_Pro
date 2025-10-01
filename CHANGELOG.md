@@ -1,3 +1,3 @@
-## 0.0.5
+## 0.0.7
 
-* add stack Trace
+* add stack Trace and Date Time
