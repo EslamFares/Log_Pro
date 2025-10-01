@@ -29,7 +29,7 @@ class LogPro {
   LogPro(
       {bool isLoggingEnabled = true,
       String? sameTitleForAll,
-      int lineLength = 85,
+      int lineLength = 100,
       String? lineShape,
       bool msgStartInNewLine = true,
       bool splitMsgToSameLineLength = false,
@@ -211,10 +211,12 @@ class LogPro {
         : messageLog;
     String startLine = addEnterAtFirst ? '$enter$line$enter' : '$line$enter';
     String lineDividerLeading = simpleShapeLog ? "" : middleLineLeading;
-    String lineDivider = "$enter$lineDividerLeading${'─' * (_lineLength - 1)}";
+    String lineDivider = "$enter$lineDividerLeading${'┄' * (_lineLength - 1)}";
     String endLine = '$enter$lineEnd';
     String dot = ":";
-    String titleEmoji = "$logEmoji $logTitle $logSameTitleForAll";
+    String textCheckTrim(text) => text.trim().isNotEmpty ? " $text" : "";
+    String titleEmoji =
+        "$logEmoji${textCheckTrim(logTitle)}${textCheckTrim(logSameTitleForAll)}";
     String titleEmojiTime = "$titleEmoji $currentTime";
     String titleSimple = "$middleLineLeading$titleEmojiTime$dot";
     String titleFull =

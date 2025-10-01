@@ -4,9 +4,11 @@ void main() async {
   // Create a LogPro instance
   final logPro = LogPro(
     sameTitleForAll: "LogPro",
+    simpleBorderOneLine: true,
+    //
   );
   final logPro2 = logPro.copyWith(
-      sameTitleForAll: "LogPro2",
+      // sameTitleForAll: "LogPro2",
       isLoggingEnabled: true,
       stackTraceLinesToShow: 0);
 
@@ -24,7 +26,7 @@ void main() async {
   logPro.info("This is an informational message.");
   logPro.warning("This is a warning message. " * 10,
       stackTrace: StackTrace.current);
-  logPro2.error("An error occurred. " * 10, stackTrace: StackTrace.current);
+  logPro2.error("no title" * 10, stackTrace: StackTrace.current);
   logPro.risk("This is a high-risk message.");
   logPro.normal("Normal logging message here.");
   logPro.magenta("Magenta logging message here.");
