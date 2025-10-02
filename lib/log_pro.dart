@@ -17,7 +17,7 @@ class LogPro {
   /// Indicates if logging is enabled.
   final bool _isLoggingEnabled;
   final String? _sameTitleForAll;
-  final int _lineLength;
+  final int? _lineLength;
   final String? _lineShape;
   final bool _msgStartInNewLine;
   final bool _splitMsgToSameLineLength;
@@ -39,7 +39,9 @@ class LogPro {
   LogPro({
     bool isLoggingEnabled = true,
     String? sameTitleForAll,
-    int lineLength = 100,
+
+    /// default in log ( lineLength : 113) || use print : true => (lineLength : 100). chnage if you want to same length
+    int? lineLength,
     String? lineShape,
     bool msgStartInNewLine = true,
     bool splitMsgToSameLineLength = false,
@@ -49,6 +51,8 @@ class LogPro {
     bool simpleBorderOneLine = false,
     bool fullLineTitleAndTime = false,
     bool simpleShapeLog = false,
+
+    /// if (usePrint : true) in ios log not colorized
     bool usePrint = false,
     int stackTraceLinesToShow = 3,
     bool showDate = true,
@@ -150,7 +154,8 @@ class LogPro {
     bool? usePrint,
   }) {
     lineShape = lineShape ?? _lineShape;
-    lineLength = lineLength ?? _lineLength;
+    usePrint = usePrint ?? _usePrint;
+    lineLength = lineLength ?? (_lineLength ?? (usePrint ? 100 : 113));
     msgStartInNewLine = msgStartInNewLine ?? _msgStartInNewLine;
     makeTitleSameWidth = makeTitleSameWidth ?? _makeTitleSameWidth;
     simpleBorderOneLine = simpleBorderOneLine ?? _simpleBorderOneLine;
@@ -162,7 +167,6 @@ class LogPro {
     simpleShapeLog = simpleShapeLog ?? _simpleShapeLog;
     addEnterAtFirst = addEnterAtFirst ?? _addEnterAtFirst;
     lineShape = lineShape ?? _lineShape;
-    usePrint = usePrint ?? _usePrint;
     bool customColorCorrectFormate =
         customColorANSI != null ? _isValidAnsiCodes(customColorANSI) : false;
     String color = customColorANSI != null
@@ -221,7 +225,7 @@ class LogPro {
         : messageLog;
     String startLine = addEnterAtFirst ? '$enter$line$enter' : '$line$enter';
     String lineDividerLeading = simpleShapeLog ? "" : middleLineLeading;
-    String lineDivider = "$enter$lineDividerLeading${'┄' * (_lineLength - 1)}";
+    String lineDivider = "$enter$lineDividerLeading${'┄' * (lineLength - 1)}";
     String endLine = '$enter$lineEnd';
     String dot = ":";
     String textCheckTrim(String? text) =>
@@ -372,7 +376,7 @@ class LogPro {
           emoji: emoji,
           stackTrace: stackTrace ?? StackTrace.current);
 
-  /// Success log [✅ green 🟢]
+  /// s [Success] log [✅ green 🟢]
   void s(String message,
           {StackTrace? stackTrace,
           String? title, //= 'SUCCESS',
