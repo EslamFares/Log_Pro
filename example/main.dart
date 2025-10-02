@@ -20,6 +20,7 @@ void main() async {
     sameTitleForAll: "LogPro Print",
     usePrint: true,
     isLoggingEnabled: true,
+    lineLength: 100,
   );
 
   // Example log messages
@@ -45,4 +46,17 @@ void main() async {
 
   // Example print messages
   ptr.info("This is an informational message.*******");
+}
+//*------------------ no color -----------------*/
+
+void logProTest() async {
+  final logPro = LogPro(
+      // sameTitleForAll: "LogPro",
+      simpleBorderOneLine: false,
+      stopColorize: true,
+      usePrint: true,
+      lineShapeLeadingCenter: "|");
+  logPro.error("message");
+  logPro.risk("message");
+  // logPro.s("message");
 }

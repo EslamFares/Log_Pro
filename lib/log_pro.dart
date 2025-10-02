@@ -19,6 +19,10 @@ class LogPro {
   final String? _sameTitleForAll;
   final int? _lineLength;
   final String? _lineShape;
+  final String? _lineShapeDividing;
+  final String? _lineShapeLeadingCenter;
+  final String? _lineShapeLeadingTop;
+  final String? _lineShapeLeadingBottom;
   final bool _msgStartInNewLine;
   final bool _splitMsgToSameLineLength;
   final bool _splitMsgToSameLineLengthAddLeading;
@@ -33,16 +37,23 @@ class LogPro {
   final bool _showTime;
   final bool _showTimeWithMilliseconds;
   final bool _showTimeWithMicroseconds;
+  final bool _stopColorize;
   final bool _showEmojis;
 
   /// Creates a [LogPro] instance with customizable logging options.
+  ///
+  /// - `lineLength`: Defaults to `113` for log, or `100` if `usePrint : true`.
+  ///
+  /// - **Note**: If `usePrint : true`, logs will `not be colorized` on `iOS`.
   LogPro({
     bool isLoggingEnabled = true,
     String? sameTitleForAll,
-
-    /// default in log ( lineLength : 113) || use print : true => (lineLength : 100). chnage if you want to same length
     int? lineLength,
     String? lineShape,
+    String? lineShapeDividing,
+    String? lineShapeLeadingCenter,
+    String? lineShapeLeadingTop,
+    String? lineShapeLeadingBottom,
     bool msgStartInNewLine = true,
     bool splitMsgToSameLineLength = false,
     bool splitMsgToSameLineLengthAddLeading = true,
@@ -51,8 +62,6 @@ class LogPro {
     bool simpleBorderOneLine = false,
     bool fullLineTitleAndTime = false,
     bool simpleShapeLog = false,
-
-    /// if (usePrint : true) in ios log not colorized
     bool usePrint = false,
     int stackTraceLinesToShow = 3,
     bool showDate = true,
@@ -60,6 +69,7 @@ class LogPro {
     bool showTimeWithMilliseconds = true,
     bool showTimeWithMicroseconds = false,
     bool showEmojis = true,
+    bool stopColorize = false,
   })  : _stackTraceLinesToShow = stackTraceLinesToShow,
         _usePrint = usePrint,
         _simpleShapeLog = simpleShapeLog,
@@ -72,6 +82,10 @@ class LogPro {
         _splitMsgToSameLineLength = splitMsgToSameLineLength,
         _msgStartInNewLine = msgStartInNewLine,
         _lineShape = lineShape,
+        _lineShapeDividing = lineShapeDividing,
+        _lineShapeLeadingCenter = lineShapeLeadingCenter,
+        _lineShapeLeadingTop = lineShapeLeadingTop,
+        _lineShapeLeadingBottom = lineShapeLeadingBottom,
         _lineLength = lineLength,
         _sameTitleForAll = sameTitleForAll,
         _isLoggingEnabled = isLoggingEnabled,
@@ -79,7 +93,8 @@ class LogPro {
         _showTime = showTime,
         _showTimeWithMilliseconds = showTimeWithMilliseconds,
         _showTimeWithMicroseconds = showTimeWithMicroseconds,
-        _showEmojis = showEmojis;
+        _showEmojis = showEmojis,
+        _stopColorize = stopColorize;
 
   /// Creates a copy of this `LogPro` instance but with the given fields
   /// replaced with the new values.
@@ -89,6 +104,10 @@ class LogPro {
     String? sameTitleForAll,
     int? lineLength,
     String? lineShape,
+    String? lineShapeDividing,
+    String? lineShapeLeadingCenter,
+    String? lineShapeLeadingTop,
+    String? lineShapeLeadingBottom,
     bool? msgStartInNewLine,
     bool? splitMsgToSameLineLength,
     bool? splitMsgToSameLineLengthAddLeading,
@@ -104,12 +123,17 @@ class LogPro {
     bool? showTimeWithMilliseconds,
     bool? showTimeWithMicroseconds,
     bool? showEmojis,
+    bool? stopColorize,
   }) {
     return LogPro(
       isLoggingEnabled: isLoggingEnabled ?? _isLoggingEnabled,
       sameTitleForAll: sameTitleForAll ?? _sameTitleForAll,
       lineLength: lineLength ?? _lineLength,
       lineShape: lineShape ?? _lineShape,
+      lineShapeDividing: lineShapeDividing ?? _lineShapeDividing,
+      lineShapeLeadingCenter: lineShapeLeadingCenter ?? _lineShapeLeadingCenter,
+      lineShapeLeadingTop: lineShapeLeadingTop ?? _lineShapeLeadingTop,
+      lineShapeLeadingBottom: lineShapeLeadingBottom ?? _lineShapeLeadingBottom,
       msgStartInNewLine: msgStartInNewLine ?? _msgStartInNewLine,
       splitMsgToSameLineLength:
           splitMsgToSameLineLength ?? _splitMsgToSameLineLength,
@@ -129,6 +153,7 @@ class LogPro {
       showTimeWithMicroseconds:
           showTimeWithMicroseconds ?? _showTimeWithMicroseconds,
       showEmojis: showEmojis ?? _showEmojis,
+      stopColorize: stopColorize ?? _stopColorize,
     );
   }
 
@@ -139,6 +164,10 @@ class LogPro {
     String? title,
     String? emoji,
     String? lineShape,
+    String? lineShapeDividing,
+    String? lineShapeLeadingCenter,
+    String? lineShapeLeadingTop,
+    String? lineShapeLeadingBottom,
     int? lineLength,
     String? time,
     bool? msgStartInNewLine,
@@ -152,8 +181,20 @@ class LogPro {
     StackTrace? stackTrace,
     String? customColorANSI,
     bool? usePrint,
+    int? stackTraceLinesToShow,
+    bool? showDate,
+    bool? showTime,
+    bool? showTimeWithMilliseconds,
+    bool? showTimeWithMicroseconds,
+    bool? showEmojis,
+    bool? stopColorize,
   }) {
     lineShape = lineShape ?? _lineShape;
+    lineShapeDividing = lineShapeDividing ?? _lineShapeDividing;
+    lineShapeLeadingCenter = lineShapeLeadingCenter ?? _lineShapeLeadingCenter;
+    lineShapeLeadingTop = lineShapeLeadingTop ?? _lineShapeLeadingTop;
+    lineShapeLeadingBottom = lineShapeLeadingBottom ?? _lineShapeLeadingBottom;
+
     usePrint = usePrint ?? _usePrint;
     lineLength = lineLength ?? (_lineLength ?? (usePrint ? 100 : 113));
     msgStartInNewLine = msgStartInNewLine ?? _msgStartInNewLine;
@@ -166,7 +207,10 @@ class LogPro {
         _splitMsgToSameLineLengthAddLeading;
     simpleShapeLog = simpleShapeLog ?? _simpleShapeLog;
     addEnterAtFirst = addEnterAtFirst ?? _addEnterAtFirst;
-    lineShape = lineShape ?? _lineShape;
+    //*---------------------------------------------*/
+    bool usedStopColorize = stopColorize ?? _stopColorize;
+
+    String restColor = usedStopColorize ? "" : _reset;
     bool customColorCorrectFormate =
         customColorANSI != null ? _isValidAnsiCodes(customColorANSI) : false;
     String color = customColorANSI != null
@@ -174,34 +218,49 @@ class LogPro {
             ? customColorANSI
             : _yellow
         : _getColorFromlogColorEnum(logColor);
+    color = usedStopColorize ? "" : color;
+    String enter = '$restColor\n$color';
 
-    String enter = '$_reset\n$color';
     String checkcustomColor = customColorANSI != null
         ? customColorCorrectFormate
             ? ""
             : "your custom color is not correct format ex: (\\x1B[31m) "
         : "";
-    String middleLineLeading = simpleBorderOneLine ? "|" : "║";
+    //*---------------------------------------------*/
+    int maxLeadingLength = 5;
+    String middleLineLeading =
+        lineShapeLeadingCenter ?? (simpleBorderOneLine ? "|" : "║");
+    middleLineLeading = middleLineLeading._maxLength(maxLeadingLength);
     message = message.replaceAll("\n", enter + middleLineLeading);
     //============================================================
     bool isLoggingEnabled = _isLoggingEnabled;
     //============================================================
     String currentTime = _logProTimeFormater(
       customTime: time,
-      showDate: _showDate,
-      showTime: _showTime,
-      withMilliseconds: _showTimeWithMilliseconds,
-      withMicroseconds: _showTimeWithMicroseconds,
+      showDate: showDate ?? _showDate,
+      showTime: showTime ?? _showTime,
+      withMilliseconds: showTimeWithMilliseconds ?? _showTimeWithMilliseconds,
+      withMicroseconds: showTimeWithMicroseconds ?? _showTimeWithMicroseconds,
     );
-    String line = _line(
-        shape: lineShape, length: lineLength, simple: simpleBorderOneLine);
-    String lineEnd = _line(
-        shape: lineShape,
-        length: lineLength,
-        isStart: false,
-        simple: simpleBorderOneLine);
-
-    String? logEmoji = _showEmojis
+    String lineStrart = _lineStartEnd(
+      lineShape: lineShape,
+      lineLength: lineLength,
+      simpleBorderOneLine: simpleBorderOneLine,
+      lineShapeLeadingBottom: lineShapeLeadingBottom,
+      lineShapeLeadingTop: lineShapeLeadingTop,
+      maxLeadingLength: maxLeadingLength,
+    );
+    String lineEnd = _lineStartEnd(
+      lineShape: lineShape,
+      lineLength: lineLength,
+      isStart: false,
+      simpleBorderOneLine: simpleBorderOneLine,
+      lineShapeLeadingBottom: lineShapeLeadingBottom,
+      lineShapeLeadingTop: lineShapeLeadingTop,
+      maxLeadingLength: maxLeadingLength,
+    );
+    bool usedShowEmojis = showEmojis ?? _showEmojis;
+    String? logEmoji = usedShowEmojis
         ? _logTitleSameLength(emoji, makeTitleSameWidth, addBrackets: false)
         : null;
     String logTitle = _logTitleSameLength(
@@ -223,9 +282,17 @@ class LogPro {
     String msgInNewLine = msgStartInNewLine
         ? ('$enter$middleLineLeading$messageLog')
         : messageLog;
-    String startLine = addEnterAtFirst ? '$enter$line$enter' : '$line$enter';
+    String startLine =
+        addEnterAtFirst ? '$enter$lineStrart$enter' : '$lineStrart$enter';
     String lineDividerLeading = simpleShapeLog ? "" : middleLineLeading;
-    String lineDivider = "$enter$lineDividerLeading${'┄' * (lineLength - 1)}";
+    String lineShapeDividingUsed = lineShapeDividing ?? '┄';
+
+    String lineDivider = _drawLine(
+        enter: enter,
+        lineShape: lineShapeDividingUsed,
+        lineLength: lineLength,
+        lineLeading: lineDividerLeading);
+
     String endLine = '$enter$lineEnd';
     String dot = ":";
     String textCheckTrim(String? text) =>
@@ -236,19 +303,22 @@ class LogPro {
     String titleSimple = "$middleLineLeading$titleEmojiTime$dot";
     String titleFull =
         _fullLength(titleSimple, fullLineTitleAndTime, length: lineLength);
+    int usedStackTraceLinesToShow =
+        stackTraceLinesToShow ?? _stackTraceLinesToShow;
+
     String stackTraceString = stackTrace != null
-        ? _formatStackTrace(stackTrace, _stackTraceLinesToShow, enter,
+        ? _formatStackTrace(stackTrace, usedStackTraceLinesToShow, enter,
             middleLineLeading, simpleShapeLog, lineDivider)
         : '';
 
     if (isLoggingEnabled) {
       if (simpleShapeLog) {
         _usePrintHandel(
-            '$color$checkcustomColor$titleEmojiTime$dot$message$stackTraceString$_reset',
+            '$color$checkcustomColor$titleEmojiTime$dot$message$stackTraceString$restColor',
             usePrint: usePrint);
       } else {
         _usePrintHandel(
-            '$color$checkcustomColor$startLine$titleFull$lineDivider$msgInNewLine$stackTraceString$endLine$_reset',
+            '$color$checkcustomColor$startLine$titleFull$lineDivider$msgInNewLine$stackTraceString$endLine$restColor',
             usePrint: usePrint);
       }
     } //  log('$_red[ERROR]: $message$_reset');

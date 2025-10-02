@@ -4,7 +4,8 @@ import 'package:log_pro/log_pro.dart';
 import '../example/main.dart' as ex;
 
 void main() {
-  ex.main();
+  ex.logProTest();
+  // ex.main();
 
   test('Log Pro test', () {
     LogPro logPro = LogPro();
